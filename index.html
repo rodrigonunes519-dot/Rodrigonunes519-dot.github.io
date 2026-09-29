@@ -6,22 +6,37 @@
 <title>Rodrigo Nunes | Dev Python</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#0d1117; color:#e6edf3; line-height:1.6}
-.container{max-width:800px; margin:0 auto; padding:40px 20px}
-header{text-align:center; padding:60px 0 40px; border-bottom:1px solid #21262d}
-header h1{font-size:2.5rem; margin-bottom:10px}
-header p{color:#8b949e; font-size:1.1rem}
-.tag{display:inline-block; background:#238636; padding:4px 12px; border-radius:20px; font-size:0.9rem; margin-top:15px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3;line-height:1.6}
+.container{max-width:800px;margin:0 auto;padding:40px 20px}
+header{text-align:center;padding:60px 0 40px;border-bottom:1px solid #21262d}
+header h1{font-size:2.5rem;margin-bottom:10px}
+header p{color:#8b949e;font-size:1.1rem}
+.tag{display:inline-block;background:#238636;padding:4px 12px;border-radius:20px;font-size:0.9rem;margin-top:15px}
 section{margin:50px 0}
-h2{font-size:1.5rem; margin-bottom:20px; border-left:4px solid #238636; padding-left:12px}
-.projeto{background:#161b22; border:1px solid #30363d; border-radius:12px; padding:24px; margin-bottom:20px}
+h2{font-size:1.5rem;margin-bottom:20px;border-left:4px solid #238636;padding-left:12px}
+.projeto{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:24px;margin-bottom:20px}
 .projeto h3{margin-bottom:8px}
-.projeto p{color:#8b949e; margin-bottom:12px}
-.projeto a{color:#58a6ff; text-decoration:none; font-weight:bold}
+.projeto p{color:#8b949e;margin-bottom:12px}
+.projeto a{color:#58a6ff;text-decoration:none;font-weight:bold}
 .projeto a:hover{text-decoration:underline}
-.btn{display:inline-block; background:#238636; color:white; padding:10px 20px; border-radius:8px; text-decoration:none; margin-top:10px}
+.btn{display:inline-block;background:#238636;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;margin-top:10px}
 .btn:hover{background:#2ea043}
-footer{text-align:center; padding:40px 0; color:#8b949e; border-top:1px solid #21262d; margin-top:60px}
+
+/* Lista Interativa */
+.todo-box{display:flex;gap:10px;margin-bottom:20px}
+.todo-box input{flex:1;background:#0d1117;border:1px solid #30363d;color:#e6edf3;padding:12px;border-radius:8px;outline:none}
+.todo-box input:focus{border-color:#238636}
+.todo-box button{background:#238636;color:white;border:none;padding:12px 20px;border-radius:8px;font-weight:bold;cursor:pointer}
+.todo-box button:hover{background:#2ea043}
+#lista{list-style:none}
+#lista li{background:#0d1117;border:1px solid #30363d;padding:12px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+#lista li span{flex:1}
+#lista li.concluida span{text-decoration:line-through;color:#8b949e}
+.acoes{display:flex;gap:8px}
+.acoes button{border:none;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:0.85rem}
+.btn-check{background:#21262d;color:#e6edf3}
+.btn-del{background:#da3633;color:white}
+footer{text-align:center;padding:40px 0;color:#8b949e;border-top:1px solid #21262d;margin-top:60px}
 </style>
 </head>
 <body>
@@ -39,25 +54,71 @@ footer{text-align:center; padding:40px 0; color:#8b949e; border-top:1px solid #2
 
 <section>
 <h2>Projetos</h2>
+
 <div class="projeto">
-<h3>📝 Minha Lista de Tarefas</h3>
-<p>Gerenciador de tarefas simples feito em Python para organizar o dia a dia pelo terminal. Com funções de adicionar, listar e remover tarefas.</p>
-<p><strong>Tecnologias:</strong> Python 3</p>
-<a href="https://github.com/rodrigonunes519-dot/minha-lista-de-tarefas" target="_blank">→ Ver no GitHub</a>
+<h3>📝 Minha Lista de Tarefas - USE AGORA</h3>
+<p>Versão interativa do meu projeto Python. Adicione e organize suas tarefas aqui mesmo no site. Os dados ficam salvos no seu navegador.</p>
+
+<div class="todo-box">
+<input type="text" id="inputTarefa" placeholder="Digite uma tarefa... ex: Estudar Python">
+<button onclick="addTarefa()">Adicionar</button>
 </div>
+
+<ul id="lista"></ul>
+
+<p style="margin-top:20px"><strong>Tecnologias:</strong> Python (original) + JavaScript (versão web)</p>
+<a href="https://github.com/rodrigonunes519-dot/minha-lista-de-tarefas" target="_blank">→ Ver código original em Python no GitHub</a>
+</div>
+
 </section>
 
 <section>
 <h2>Contato</h2>
 <p>Vamos conversar?</p>
 <a class="btn" href="https://github.com/rodrigonunes519-dot" target="_blank">Meu GitHub</a>
-<!-- Troca pelo seu LinkedIn quando criar -->
-<!-- <a class="btn" href="SEU LINKEDIN" target="_blank" style="background:#0a66c2; margin-left:10px">LinkedIn</a> -->
 </section>
 
 <footer>
 <p>Feito por Rodrigo Nunes - 2026</p>
 </footer>
 </div>
+
+<script>
+let tarefas = JSON.parse(localStorage.getItem('tarefas_rodrigo') || '[]');
+
+function salvar(){ localStorage.setItem('tarefas_rodrigo', JSON.stringify(tarefas)); }
+
+function render(){
+  const ul = document.getElementById('lista');
+  ul.innerHTML = '';
+  tarefas.forEach((t, i) => {
+    const li = document.createElement('li');
+    if(t.feita) li.classList.add('concluida');
+    li.innerHTML = `<span>${t.texto}</span>
+      <div class="acoes">
+        <button class="btn-check" onclick="toggle(${i})">${t.feita? 'Desfazer' : 'Feito'}</button>
+        <button class="btn-del" onclick="remover(${i})">X</button>
+      </div>`;
+    ul.appendChild(li);
+  });
+}
+
+function addTarefa(){
+  const input = document.getElementById('inputTarefa');
+  const texto = input.value.trim();
+  if(!texto) return;
+  tarefas.push({texto, feita: false});
+  input.value = '';
+  salvar(); render();
+}
+
+function toggle(i){ tarefas[i].feita =!tarefas[i].feita; salvar(); render(); }
+function remover(i){ tarefas.splice(i,1); salvar(); render(); }
+
+document.getElementById('inputTarefa').addEventListener('keydown', e => { if(e.key === 'Enter') addTarefa(); });
+
+render();
+</script>
+
 </body>
 </html>
